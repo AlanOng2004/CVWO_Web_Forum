@@ -8,6 +8,7 @@ import (
 
     "github.com/go-chi/chi/v5"
     "github.com/go-chi/chi/v5/middleware"
+    "github.com/go-chi/cors"
 )
 
 func main() {
@@ -18,6 +19,16 @@ func main() {
 
     // Basic middleware
     r.Use(middleware.Logger)
+
+    r.Use(cors.Handler(cors.Options{
+        // AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+        AllowedOrigins:   []string{"http://localhost:5173"},
+        // AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedHeaders:   []string{"Content-Type"},
+        ExposedHeaders:   []string{"Link"},
+        AllowCredentials: false,
+      }))
 
     // Health endpoint
     r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
