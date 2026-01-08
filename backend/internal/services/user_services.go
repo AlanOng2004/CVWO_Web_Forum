@@ -26,7 +26,11 @@ func (s *UserService) CreateUser(username string) (*models.User, error){
 
 	// Check for existing username
 	existingUser, err := s.repo.GetByUsername(username)
-	if err == nil && username == existingUser { 
+	if err != nil {
+		return nil, err
+	}
+	
+	if existingUser != nil { 
 		return nil, errors.New("username already exists")
 	}
 
@@ -50,14 +54,32 @@ func (s *UserService) GetUserByID(id int) (*models.User, error){
 
 	// Check if user exists
 	user, err := s.repo.GetByID(id)
-	if err == nil && user == nil { 
+	if err != nil {
+		return nil, err
+	}
+	
+	if user == nil { 
 		return nil, errors.New("user does not exist")
 	}
 
 	return user, nil
 }
 
-func GetUserByUserName(username string){
-	//return user or error
-	//Repo call UserRepository.GetByUsername
+func (s *UserService) GetUserByUsername(username string) (*models.User, error){
+	// Validation
+	if username == ""{
+		return nil, errors.New("username cannot be empty")
+	}
+
+	// Check if user exists
+	user, err := s.repo.GetByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	
+	if user == nil { 
+		return nil, errors.New("user does not exist")
+	}
+
+	return user, nil
 }
